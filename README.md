@@ -200,36 +200,7 @@ Check backend health status.
 }
 ```
 
-## Deployment
-
-### Frontend (Vercel)
-
-1. **Push your code to GitHub**
-
-2. **Import project in Vercel**:
-
-   - Connect your GitHub repository
-   - Set root directory to `frontend`
-   - Framework preset: Vite
-   - Build command: `npm run build`
-   - Output directory: `dist`
-
-3. **Add environment variable**:
-
-   - `VITE_API_URL`: Your backend URL
-
-4. **Deploy**
-
-### Backend (Railway/Render/AWS)
-
-#### Railway:
-
-3. **Configure**:
-   - Root directory: `backend`
-   - Build command: `pip install -r requirements.txt`
-   - Start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-4. **Add environment variables**
-5. **Deploy**
+Please refer to [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions for both Vercel and other platforms.
 
 ## Tech Stack
 
