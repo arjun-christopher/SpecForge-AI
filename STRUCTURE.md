@@ -12,7 +12,7 @@ SpecForge-AI/
 │   │
 │   ├── services/                     # Business logic
 │   │   ├── __init__.py
-│   │   └── llm_service.py           # OpenAI integration service
+│   │   └── llm_service.py           # Gemini integration service
 │   │
 │   ├── main.py                       # FastAPI application entry point
 │   ├── config.py                     # Configuration management
@@ -54,27 +54,15 @@ SpecForge-AI/
 
 ### Backend Files
 
-| File                      | Purpose                                                         |
-| ------------------------- | --------------------------------------------------------------- |
-| `main.py`                 | FastAPI application with routes, middleware, and error handling |
-| `config.py`               | Environment variable management and application settings        |
-| `models/schemas.py`       | Pydantic models for request/response validation                 |
-| `services/llm_service.py` | OpenAI API integration and prompt engineering                   |
-| `requirements.txt`        | Python package dependencies                                     |
-| `.env.example`            | Template for environment variables                              |
-
-### Frontend Files
-
-| File                                | Purpose                                          |
 | ----------------------------------- | ------------------------------------------------ |
-| `src/App.jsx`                       | Main application component with state management |
-| `src/components/InputSection.jsx`   | Feature description input form                   |
-| `src/components/ResultsDisplay.jsx` | Results visualization with expandable sections   |
-| `src/services/api.js`               | API client for backend communication             |
-| `src/index.css`                     | TailwindCSS configuration and custom styles      |
-| `vite.config.js`                    | Vite build configuration                         |
-| `tailwind.config.js`                | TailwindCSS theme customization                  |
-| `vercel.json`                       | Vercel deployment configuration                  |
+| `src/App.jsx` | Main application component with state management |
+| `src/components/InputSection.jsx` | Feature description input form |
+| `src/components/ResultsDisplay.jsx` | Results visualization with expandable sections |
+| `src/services/api.js` | API client for backend communication |
+| `src/index.css` | TailwindCSS configuration and custom styles |
+| `vite.config.js` | Vite build configuration |
+| `tailwind.config.js` | TailwindCSS theme customization |
+| `vercel.json` | Vercel deployment configuration |
 
 ## Key Technologies
 
@@ -82,7 +70,7 @@ SpecForge-AI/
 
 - **FastAPI**: Modern Python web framework
 - **Pydantic**: Data validation using Python type hints
-- **OpenAI API**: GPT-4 integration
+- **Google Gemini API**: AI integration
 - **Uvicorn**: ASGI server for FastAPI
 - **python-dotenv**: Environment variable management
 
@@ -115,8 +103,8 @@ SpecForge-AI/
 ### Backend (.env)
 
 ```env
-OPENAI_API_KEY=your_openai_api_key_here
-OPENAI_MODEL=gpt-4-turbo-preview
+GEMINI_API_KEY=your_gemini_api_key_here
+GEMINI_MODEL=gemini-2.5-flash
 ```
 
 ### Frontend (.env)
@@ -162,5 +150,5 @@ Production Environment
 │
 └── Backend (Railway/Render/AWS)
     ├── FastAPI application
-    └── Environment: OPENAI_API_KEY, OPENAI_MODEL
+    └── Environment: GEMINI_API_KEY, GEMINI_MODEL
 ```

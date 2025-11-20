@@ -41,7 +41,7 @@ async def startup_event():
     try:
         settings.validate()
         logger.info("Application started successfully")
-        logger.info(f"Using OpenAI model: {settings.OPENAI_MODEL}")
+        logger.info(f"Using Gemini model: {settings.GEMINI_MODEL}")
     except ValueError as e:
         logger.error(f"Configuration error: {str(e)}")
         raise
@@ -73,8 +73,8 @@ async def health_check():
     """
     return {
         "status": "healthy",
-        "model": settings.OPENAI_MODEL,
-        "api_configured": bool(settings.OPENAI_API_KEY)
+        "model": settings.GEMINI_MODEL,
+        "api_configured": bool(settings.GEMINI_API_KEY)
     }
 
 

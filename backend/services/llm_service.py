@@ -1,12 +1,12 @@
 """
 LLM Service for generating structured requirements analysis.
-Integrates with OpenAI API to transform natural language into technical specifications.
+Integrates with Google Gemini API to transform natural language into technical specifications.
 """
 
 import json
 import logging
 from typing import Dict, Any
-from openai import OpenAI
+import google.generativeai as genai
 from config import settings
 
 # Configure logging
@@ -15,12 +15,12 @@ logger = logging.getLogger(__name__)
 
 
 class LLMService:
-    """Service for interacting with Large Language Models."""
+    """Service for interacting with Google Gemini API."""
     
     def __init__(self):
-        """Initialize the LLM service with OpenAI client."""
-        self.client = OpenAI(api_key=settings.OPENAI_API_KEY)
-        self.model = settings.OPENAI_MODEL
+        """Initialize the LLM service with Gemini client."""
+        genai.configure(api_key=settings.GEMINI_API_KEY)
+        self.model = genai.GenerativeModel(settings.GEMINI_MODEL)
         
     def _build_system_prompt(self) -> str:
         """
@@ -125,21 +125,40 @@ Provide a complete analysis including requirements, API design, database schema 
         try:
             logger.info(f"Analyzing feature: {feature_description[:100]}...")
             
-            # Call OpenAI API
-            response = self.client.chat.completions.create(
-                model=self.model,
-                messages=[
-                    {"role": "system", "content": self._build_system_prompt()},
-                    {"role": "user", "content": self._build_user_prompt(feature_description)}
-                ],
-                temperature=settings.TEMPERATURE,
-                max_tokens=settings.MAX_TOKENS,
-                response_format={"type": "json_object"}  # Ensure JSON response
+            # Combine system and user prompts
+            full_prompt = f"{self._build_system_prompt()}\n\n{self._build_user_prompt(feature_description)}"
+            
+            # Configure generation parameters
+            generation_config = {
+                "temperature": settings.TEMPERATURE,
+                "max_output_tokens": settings.MAX_TOKENS,
+                "response_mime_type": "application/json"
+            }
+            
+            # Call Gemini API
+            response = self.model.generate_content(
+                full_prompt,
+                generation_config=generation_config
             )
             
             # Extract and parse the response
-            content = response.choices[0].message.content
+            content = response.text
             logger.info("Successfully received LLM response")
+            
+            # Clean up the response (remove markdown code blocks if present)
+            content = content.strip()
+            
+            # Remove markdown code blocks
+            if "```json" in content:
+                content = content.split("```json")[1]
+                if "```" in content:
+                    content = content.split("```")[0]
+            elif "```" in content:
+                content = content.split("```")[1]
+                if "```" in content:
+                    content = content.split("```")[0]
+            
+            content = content.strip()
             
             # Parse JSON response
             try:
@@ -148,11 +167,29 @@ Provide a complete analysis including requirements, API design, database schema 
                 return result
             except json.JSONDecodeError as e:
                 logger.error(f"Failed to parse JSON response: {e}")
-                logger.error(f"Response content: {content}")
+                logger.error(f"RAW RESPONSE START:\n{content}\nRAW RESPONSE END")
+                
+                # Attempt to repair common JSON issues
+                try:
+                    # Sometimes Gemini adds text before or after JSON
+                    start_idx = content.find('{')
+                    end_idx = content.rfind('}')
+                    
+                    if start_idx != -1 and end_idx != -1:
+                        json_str = content[start_idx:end_idx+1]
+                        result = json.loads(json_str)
+                        logger.info("Successfully parsed JSON after repair")
+                        return result
+                except Exception as repair_error:
+                    logger.error(f"Failed to repair JSON: {repair_error}")
+                
                 raise ValueError(f"Invalid JSON response from LLM: {str(e)}")
                 
         except Exception as e:
             logger.error(f"Error calling LLM API: {str(e)}")
+            # Provide more helpful error message
+            if "400" in str(e) and "API key" in str(e):
+                raise Exception("Invalid API Key. Please check your Google Gemini API key in backend/.env")
             raise Exception(f"Failed to analyze feature: {str(e)}")
     
     def validate_response(self, response: Dict[str, Any]) -> bool:

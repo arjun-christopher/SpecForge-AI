@@ -13,9 +13,9 @@ load_dotenv()
 class Settings:
     """Application settings loaded from environment variables."""
     
-    # OpenAI API Configuration
-    OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
-    OPENAI_MODEL: str = os.getenv("OPENAI_MODEL", "gpt-4o")
+    # Google Gemini API Configuration
+    GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
+    GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
     
     # API Configuration
     API_TITLE: str = "AI Requirements Analyzer API"
@@ -31,13 +31,13 @@ class Settings:
     ]
     
     # LLM Configuration
-    MAX_TOKENS: int = 4000
+    MAX_TOKENS: int = 8192
     TEMPERATURE: float = 0.7
     
     def validate(self):
         """Validate that required settings are present."""
-        if not self.OPENAI_API_KEY:
-            raise ValueError("OPENAI_API_KEY environment variable is required")
+        if not self.GEMINI_API_KEY:
+            raise ValueError("GEMINI_API_KEY environment variable is required")
         return True
 
 

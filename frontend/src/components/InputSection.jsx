@@ -99,7 +99,6 @@ export default function InputSection({ value, onChange, onSubmit, isLoading }) {
             </span>
           ) : (
             <span className="flex items-center justify-center">
-              <Sparkles className="w-5 h-5 mr-2" />
               Generate Requirements
             </span>
           )}

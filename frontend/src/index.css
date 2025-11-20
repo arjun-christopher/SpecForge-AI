@@ -5,12 +5,8 @@
 @tailwind utilities;
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-
   body {
-    @apply bg-gradient-to-br from-dark-950 via-dark-900 to-dark-950 text-dark-50 font-sans antialiased;
+    @apply bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-50 font-sans antialiased;
     min-height: 100vh;
   }
 }

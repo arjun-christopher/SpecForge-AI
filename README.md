@@ -6,7 +6,7 @@ Transform natural language feature descriptions into comprehensive technical spe
 
 ## Features
 
-- **AI-Powered Analysis**: Leverages GPT-4 to analyze feature descriptions
+- **AI-Powered Analysis**: Leverages Google Gemini API to analyze feature descriptions
 - **Comprehensive Output**: Generates requirements, API design, database schema, and sprint tasks
 - **Premium UI**: Modern, responsive interface with glassmorphism and smooth animations
 - **Structured JSON**: All outputs in well-defined, parseable JSON format
@@ -29,7 +29,7 @@ SpecForge-AI/
 │   ├── models/
 │   │   └── schemas.py      # Pydantic models
 │   └── services/
-│       └── llm_service.py  # OpenAI integration
+│       └── llm_service.py  # Gemini integration
 │
 └── frontend/               # React frontend
     ├── src/
@@ -49,7 +49,7 @@ SpecForge-AI/
 
 - Python 3.10+
 - Node.js 18+
-- OpenAI API key
+- Google Gemini API key
 
 ### Backend Setup
 
@@ -83,9 +83,9 @@ SpecForge-AI/
    # Copy the example file
    copy .env.example .env
 
-   # Edit .env and add your OpenAI API key
-   OPENAI_API_KEY=your_openai_api_key_here
-   OPENAI_MODEL=gpt-4-turbo-preview
+   # Edit .env and add your Gemini API key
+   GEMINI_API_KEY=your_gemini_api_key_here
+   GEMINI_MODEL=gemini-2.5-flash
    ```
 
 5. **Run the backend**:
@@ -195,7 +195,7 @@ Check backend health status.
 ```json
 {
   "status": "healthy",
-  "model": "gpt-4-turbo-preview",
+  "model": "gemini-2.5-flash",
   "api_configured": true
 }
 ```
@@ -224,18 +224,6 @@ Check backend health status.
 
 #### Railway:
 
-1. **Create new project** in Railway
-2. **Add Python service**
-3. **Set root directory** to `backend`
-4. **Add environment variables**:
-   - `OPENAI_API_KEY`
-   - `OPENAI_MODEL`
-5. **Deploy**
-
-#### Render:
-
-1. **Create new Web Service**
-2. **Connect repository**
 3. **Configure**:
    - Root directory: `backend`
    - Build command: `pip install -r requirements.txt`
@@ -248,7 +236,7 @@ Check backend health status.
 ### Backend
 
 - **FastAPI**: Modern Python web framework
-- **OpenAI API**: GPT-4 for AI analysis
+- **Google Gemini API**: Advanced AI for analysis
 - **Pydantic**: Data validation
 - **Uvicorn**: ASGI server
 
@@ -263,10 +251,10 @@ Check backend health status.
 
 ### Backend Environment Variables
 
-| Variable         | Description               | Default               |
-| ---------------- | ------------------------- | --------------------- |
-| `OPENAI_API_KEY` | OpenAI API key (required) | -                     |
-| `OPENAI_MODEL`   | OpenAI model to use       | `gpt-4-turbo-preview` |
+| Variable         | Description                      | Default            |
+| ---------------- | -------------------------------- | ------------------ |
+| `GEMINI_API_KEY` | Google Gemini API key (required) | -                  |
+| `GEMINI_MODEL`   | Gemini model to use              | `gemini-2.5-flash` |
 
 ### Frontend Environment Variables
 
@@ -284,7 +272,7 @@ This project is licensed under the MIT License.
 
 ## Acknowledgments
 
-- Built with OpenAI's GPT-4
+- Built with Google Gemini API
 - UI inspired by modern design principles
 - Icons by Lucide
 

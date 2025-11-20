@@ -22,8 +22,8 @@ pip install -r requirements.txt
 
 # Configure environment
 copy .env.example .env
-# Edit .env and add your OpenAI API key:
-# OPENAI_API_KEY=sk-your-key-here
+# Edit .env and add your Gemini API key:
+# GEMINI_API_KEY=AIzaSy...
 
 # Start backend server
 uvicorn main:app --reload
@@ -79,12 +79,12 @@ Build an analytics dashboard with real-time data visualization, custom reports, 
 
 See [EXAMPLES.md](EXAMPLES.md) for 30+ more examples!
 
-## Getting Your OpenAI API Key
+## Getting Your Gemini API Key
 
-1. Go to [platform.openai.com](https://platform.openai.com)
-2. Sign up or log in
-3. Navigate to API Keys section
-4. Create a new API key
+1. Go to [aistudio.google.com](https://aistudio.google.com/app/apikey)
+2. Sign in with Google
+3. Click "Create API Key"
+4. Create key in a new project
 5. Copy and paste into `backend/.env`
 
 ## Troubleshooting
@@ -93,7 +93,7 @@ See [EXAMPLES.md](EXAMPLES.md) for 30+ more examples!
 
 - Ensure Python 3.10+ is installed: `python --version`
 - Check if virtual environment is activated
-- Verify OpenAI API key is set in `.env`
+- Verify Gemini API key is set in `.env`
 
 **Frontend won't start:**
 
