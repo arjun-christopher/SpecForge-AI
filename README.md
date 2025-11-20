@@ -1,4 +1,4 @@
-# AI Requirements Analyzer
+# SpecForge AI: AI Requirements Analyzer
 
 Transform natural language feature descriptions into comprehensive technical specifications using AI-powered analysis.
 
