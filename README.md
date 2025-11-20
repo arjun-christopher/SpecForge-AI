@@ -2,7 +2,7 @@
 
 Transform natural language feature descriptions into comprehensive technical specifications using AI-powered analysis.
 
-![AI Requirements Analyzer](https://img.shields.io/badge/AI-Powered-blue) ![React](https://img.shields.io/badge/React-18.3-61dafb) ![FastAPI](https://img.shields.io/badge/FastAPI-0.109-009688) ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4-38bdf8)
+![AI Requirements Analyzer](https://img.shields.io/badge/AI-Powered-blue) ![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB) ![React](https://img.shields.io/badge/React-18.3-61dafb) ![FastAPI](https://img.shields.io/badge/FastAPI-0.109-009688) ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4-38bdf8)
 
 ## Features
 
