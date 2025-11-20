@@ -30,7 +30,7 @@ class Settings:
     CORS_ORIGIN_REGEX: str = r"https://.*\.vercel\.app"
     
     # LLM Configuration
-    MAX_TOKENS: int = 8192
+    MAX_TOKENS: int = 16384
     TEMPERATURE: float = 0.7
     
     def validate(self):

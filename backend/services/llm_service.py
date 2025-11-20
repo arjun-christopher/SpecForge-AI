@@ -122,75 +122,88 @@ Provide a complete analysis including requirements, API design, database schema 
             ValueError: If the LLM response cannot be parsed
             Exception: If the API call fails
         """
-        try:
-            logger.info(f"Analyzing feature: {feature_description[:100]}...")
-            
-            # Combine system and user prompts
-            full_prompt = f"{self._build_system_prompt()}\n\n{self._build_user_prompt(feature_description)}"
-            
-            # Configure generation parameters
-            generation_config = {
-                "temperature": settings.TEMPERATURE,
-                "max_output_tokens": settings.MAX_TOKENS,
-                "response_mime_type": "application/json"
-            }
-            
-            # Call Gemini API
-            response = self.model.generate_content(
-                full_prompt,
-                generation_config=generation_config
-            )
-            
-            # Extract and parse the response
-            content = response.text
-            logger.info("Successfully received LLM response")
-            
-            # Clean up the response (remove markdown code blocks if present)
-            content = content.strip()
-            
-            # Remove markdown code blocks
-            if "```json" in content:
-                content = content.split("```json")[1]
-                if "```" in content:
-                    content = content.split("```")[0]
-            elif "```" in content:
-                content = content.split("```")[1]
-                if "```" in content:
-                    content = content.split("```")[0]
-            
-            content = content.strip()
-            
-            # Parse JSON response
+        max_retries = 3
+        last_error = None
+        
+        for attempt in range(max_retries):
             try:
-                result = json.loads(content)
-                logger.info("Successfully parsed JSON response")
-                return result
-            except json.JSONDecodeError as e:
-                logger.error(f"Failed to parse JSON response: {e}")
-                logger.error(f"RAW RESPONSE START:\n{content}\nRAW RESPONSE END")
+                logger.info(f"Analyzing feature (Attempt {attempt + 1}/{max_retries}): {feature_description[:100]}...")
                 
-                # Attempt to repair common JSON issues
+                # Combine system and user prompts
+                full_prompt = f"{self._build_system_prompt()}\n\n{self._build_user_prompt(feature_description)}"
+                
+                # Configure generation parameters
+                generation_config = {
+                    "temperature": settings.TEMPERATURE,
+                    "max_output_tokens": settings.MAX_TOKENS,
+                    "response_mime_type": "application/json"
+                }
+                
+                # Call Gemini API
+                response = self.model.generate_content(
+                    full_prompt,
+                    generation_config=generation_config
+                )
+                
+                # Extract and parse the response
+                content = response.text
+                logger.info("Successfully received LLM response")
+                
+                # Clean up the response (remove markdown code blocks if present)
+                content = content.strip()
+                
+                # Remove markdown code blocks
+                if "```json" in content:
+                    content = content.split("```json")[1]
+                    if "```" in content:
+                        content = content.split("```")[0]
+                elif "```" in content:
+                    content = content.split("```")[1]
+                    if "```" in content:
+                        content = content.split("```")[0]
+                
+                content = content.strip()
+                
+                # Parse JSON response
                 try:
-                    # Sometimes Gemini adds text before or after JSON
-                    start_idx = content.find('{')
-                    end_idx = content.rfind('}')
+                    result = json.loads(content)
+                    logger.info("Successfully parsed JSON response")
+                    return result
+                except json.JSONDecodeError as e:
+                    logger.error(f"Failed to parse JSON response (Attempt {attempt + 1}): {e}")
+                    # logger.error(f"RAW RESPONSE START:\n{content}\nRAW RESPONSE END")
                     
-                    if start_idx != -1 and end_idx != -1:
-                        json_str = content[start_idx:end_idx+1]
-                        result = json.loads(json_str)
-                        logger.info("Successfully parsed JSON after repair")
-                        return result
-                except Exception as repair_error:
-                    logger.error(f"Failed to repair JSON: {repair_error}")
+                    # Attempt to repair common JSON issues
+                    try:
+                        # Sometimes Gemini adds text before or after JSON
+                        start_idx = content.find('{')
+                        end_idx = content.rfind('}')
+                        
+                        if start_idx != -1 and end_idx != -1:
+                            json_str = content[start_idx:end_idx+1]
+                            result = json.loads(json_str)
+                            logger.info("Successfully parsed JSON after repair")
+                            return result
+                    except Exception as repair_error:
+                        logger.error(f"Failed to repair JSON: {repair_error}")
+                    
+                    last_error = ValueError(f"Invalid JSON response from LLM: {str(e)}")
+                    # If this was the last attempt, raise the error
+                    if attempt == max_retries - 1:
+                        raise last_error
+                    
+            except Exception as e:
+                logger.error(f"Error calling LLM API (Attempt {attempt + 1}): {str(e)}")
+                last_error = e
+                # Provide more helpful error message
+                if "400" in str(e) and "API key" in str(e):
+                    raise Exception("Invalid API Key. Please check your Google Gemini API key in backend/.env")
                 
-                raise ValueError(f"Invalid JSON response from LLM: {str(e)}")
-                
-        except Exception as e:
-            logger.error(f"Error calling LLM API: {str(e)}")
-            # Provide more helpful error message
-            if "400" in str(e) and "API key" in str(e):
-                raise Exception("Invalid API Key. Please check your Google Gemini API key in backend/.env")
-            raise Exception(f"Failed to analyze feature: {str(e)}")
+                if attempt == max_retries - 1:
+                    raise Exception(f"Failed to analyze feature after {max_retries} attempts: {str(e)}")
+        
+        if last_error:
+            raise last_error
     
     def validate_response(self, response: Dict[str, Any]) -> bool:
         """
