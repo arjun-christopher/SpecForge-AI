@@ -26,9 +26,8 @@ class Settings:
     CORS_ORIGINS: list = [
         "http://localhost:3000",
         "http://localhost:5173",
-        "https://*.vercel.app",
-        "*"  # Allow all origins in development (restrict in production)
     ]
+    CORS_ORIGIN_REGEX: str = r"https://.*\.vercel\.app"
     
     # LLM Configuration
     MAX_TOKENS: int = 8192

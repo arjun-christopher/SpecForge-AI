@@ -3,7 +3,7 @@ Pydantic models for request/response validation.
 Defines the structure of API inputs and outputs.
 """
 
-from typing import List, Optional
+from typing import List, Optional, Union, Any
 from pydantic import BaseModel, Field
 
 
@@ -34,8 +34,8 @@ class APIEndpoint(BaseModel):
     method: str = Field(..., description="HTTP method (GET, POST, PUT, DELETE, etc.)")
     path: str = Field(..., description="API endpoint path")
     description: str = Field(..., description="Endpoint purpose and functionality")
-    request_body: Optional[dict] = Field(None, description="Expected request body structure")
-    response: Optional[dict] = Field(None, description="Expected response structure")
+    request_body: Optional[Union[dict, list, str, Any]] = Field(None, description="Expected request body structure")
+    response: Optional[Union[dict, list, str, Any]] = Field(None, description="Expected response structure")
     authentication: bool = Field(default=False, description="Whether authentication is required")
 
 
